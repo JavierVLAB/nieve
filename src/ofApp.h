@@ -3,11 +3,12 @@
 #include "ofMain.h"
 #include "ofxBox2d.h"
 #include "ofxOpenCv.h"
+#include "ofxKinect.h"
 #include "myCircles.h"
 
 
-//#define _USE_LIVE_VIDEO		// uncomment this to use a live camera
-								// otherwise, we'll use a movie file
+#define _USE_LIVE_VIDEO
+#define _USE_KINECT
 
 class ofApp : public ofBaseApp{
 
@@ -58,5 +59,17 @@ class ofApp : public ofBaseApp{
 		vector <ofPoint> loadPoints(string file);
 		ofPolyline                          shape;
 		vector <shared_ptr<ofxBox2dPolygon> >	polyShapes;
+
+		//--------- ofxKinect ------
+
+		ofxKinect kinect;
+
+	bool bThreshWithOpenCV;
+	bool bDrawPointCloud;
+
+	int nearThreshold;
+	int farThreshold;
+
+	int angle;
 
 };

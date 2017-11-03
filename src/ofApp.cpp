@@ -16,20 +16,27 @@ void ofApp::setup(){
 	ofBackgroundHex(0x1F2C30);
 	//ofSetLogLevel(OF_LOG_NOTICE);
 
-  ofSetFrameRate(30);
+  //ofSetFrameRate(30);
 
   //----------- openCV--------------------
 
 	#ifdef _USE_LIVE_VIDEO
+    #ifdef _USE_KINECT
+      kinect.setRegistration(true);
+      kinect.init();
+      kinect.open();
+      kinect.setCameraTiltAngle(0);
+    #else
         vidGrabber.setVerbose(true);
         vidGrabber.setup(320,240);
+    #endif
 	#else
         vidPlayer.load("fingers.mov");
         vidPlayer.play();
         vidPlayer.setLoopState(OF_LOOP_NORMAL);
 	#endif
 
-  colorImg.allocate(320,240);
+  //colorImg.allocate(640,480);
   //grayImage.allocate(320,240);
   //grayBg.allocate(320,240);
   //grayDiff.allocate(320,240);
@@ -61,8 +68,13 @@ void ofApp::update(){
   bool bNewFrame = false;
 
   #ifdef _USE_LIVE_VIDEO
-       vidGrabber.update();
-     bNewFrame = vidGrabber.isFrameNew();
+      #ifdef _USE_KINECT
+        kinect.update();
+        bNewFrame = kinect.isFrameNew();
+      #else
+        vidGrabber.update();
+        bNewFrame = vidGrabber.isFrameNew();
+      #endif
     #else
         vidPlayer.update();
         bNewFrame = vidPlayer.isFrameNew();
@@ -71,12 +83,20 @@ void ofApp::update(){
   if (bNewFrame){
 
     #ifdef _USE_LIVE_VIDEO
+        #ifdef _USE_KINECT
+          colorImg.setFromPixels(kinect.getPixels());
+          grayImage.setFromPixels(kinect.getDepthPixels());
+
+        #else
           colorImg.setFromPixels(vidGrabber.getPixels());
+          grayImage = colorImg;
+        #endif
     #else
           colorImg.setFromPixels(vidPlayer.getPixels());
+          grayImage = colorImg;
     #endif
 
-    grayImage = colorImg;
+
     if (bLearnBakground == true){
       grayBg = grayImage;
       bLearnBakground = false;
@@ -96,6 +116,7 @@ void ofApp::update(){
       for(int i = 0; i < vec.size(); i++){
         vec[i] = contourFinder.blobs[0].pts[i]*3;
       }
+        vec.simplify();
 
       poly->addVertices(vec);
       poly->setPhysics(1000.0, 1.0, 0.0);
@@ -130,7 +151,7 @@ void ofApp::draw(){
 
   // draw the incoming, the grayscale, the bg and the thresholded difference
 	ofSetHexColor(0xffffff);
-	colorImg.draw(0,0,320*3,240*3);
+	colorImg.draw(0,0);
 
 	ofFill();
 	ofSetHexColor(0x333333);
