@@ -5,10 +5,11 @@
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
 #include "myCircles.h"
+#include "ofxImGui.h"
 
 
 #define _USE_LIVE_VIDEO
-#define _USE_KINECT
+//#define _USE_KINECT
 
 class ofApp : public ofBaseApp{
 
@@ -28,6 +29,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+		void exit();
+
+		float scale;
+
 
 		// --------- ofxBox2d ---------
 
@@ -35,6 +40,9 @@ class ofApp : public ofBaseApp{
 		ofxBox2dCircle                          ground;
 		ofVboMesh                               groundMesh;
 		vector		<shared_ptr<myCircles> >    circles;
+		float 									density;
+		float 									bounce;
+		float	 									friction;
 
 		// ----------- ofxOpenCv -----------
 
@@ -52,7 +60,7 @@ class ofApp : public ofBaseApp{
 
 		ofxCvContourFinder 	contourFinder;
 
-		int 				threshold;
+		int 				openCvThreshold;
 		bool				bLearnBakground;
 
 		//--------- ConmplexPolygon ------------
@@ -71,5 +79,22 @@ class ofApp : public ofBaseApp{
 	int farThreshold;
 
 	int angle;
+
+		//--------- ofxImGui ------------
+
+	void drawGui();
+	void setupGui();
+
+	ofxImGui::Gui gui;
+	bool     showGui;
+
+
+	//------
+
+	ofFbo fbo;
+	ofMesh mesh;
+
+
+
 
 };
