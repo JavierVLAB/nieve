@@ -37,6 +37,8 @@ void ofApp::drawGui(){
       ImGui::SliderFloat("Density", &density, 0, 10.0);
       ImGui::SliderFloat("Bounce", &bounce, 0, 1.0);
       ImGui::SliderFloat("Friction", &friction, 0, 10.0);
+      ImGui::Separator();
+      vidPlayer.setPaused(!ImGui::Button("Test Window"));
     gui.end();
   }
 }

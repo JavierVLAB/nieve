@@ -8,7 +8,7 @@
 #include "ofxImGui.h"
 
 
-#define _USE_LIVE_VIDEO
+//#define _USE_LIVE_VIDEO
 //#define _USE_KINECT
 
 class ofApp : public ofBaseApp{
